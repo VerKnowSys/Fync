@@ -11,3 +11,4 @@ moc_*.cpp
 /.qmake.stash
 *.dmg
 *.xcodeproj
+bin/fync
