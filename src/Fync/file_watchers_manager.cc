@@ -53,6 +53,8 @@ void FileWatchersManager::scanDir(QDir dir) {
 
 void FileWatchersManager::fileChangedSlot(const QString& file) {
     logInfo() << "File changed slot called for:" << file;
+    /*  here all the magic wil lhappen. We need to create thread safe
+        queue of events from fs, which will be passed to endpoint mechanism */
 }
 
 
@@ -62,10 +64,9 @@ void FileWatchersManager::dirChangedSlot(const QString& dir) {
     if (not QDir(dir).exists()) {
         logDebug() << "Dir has gone. Assuming directory deletion of:" << dir;
         removePath(dir);
-        // scanDir(QDir(dir + "/.."));
     } else {
         logDebug() << "Dir changed:" << dir;
-        scanDir(QDir(dir)); /* don't scan non existent directories */
+        scanDir(QDir(dir));
     }
     long end = QDateTime::currentMSecsSinceEpoch();
     logDebug() << "Dir changed slot took:" << QString::number(end - start) << "ms";
