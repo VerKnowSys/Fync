@@ -25,13 +25,13 @@
 #include "../CuteLogger/FileAppender.h"
 
 
-#define APP_VERSION "0.1.0"
+#define APP_VERSION "0.1.1"
 
 #define FILE_SYNC_TIMEOUT 1000000 /* 1 second in us */
 #define COPYRIGHT "2014 verknowsys.com"
 #define DEFAULT_STRING_CODEC "UTF8"
-#define ALLOWED_FILE_TYPES "\\.*$" /* NOTE: switched to wildcard to accept any file type drop */
-// #define ALLOWED_FILE_TYPES "\\.pro$|\\.hpp$|\\.h$|\\.c$|\\.cc$|\\.cpp$|\\.scala$|\\.java$|\\.rb$|Rakefile$|\\.properties$|\\.xml$|\\.html$|\\.js$|\\.coffee$|\\.sh$|\\.def$|\\.md$|\\.haml$|\\.slim$|\\.css$|\\.sass$|\\.scss$|\\.less$|\\.erb$|\\.yml|\\.yaml$$|\\.conf$|\\.json$|\\.jpg$|\\.jpeg$|\\.png$|\\.svg$|\\.gif$|\\.jar$|\\.ini$|\\.patch$|\\.jp2$"
+#define NOT_ALLOWED_FILE_TYPES "\\.(wav|m4a|mov|aif|mp3|mp4|ogv|3gp|ogg|ai|psd|jpg|jpeg|png|tiff|avi|gif|jar|jp2|mp?g|bmp|gif|zip|rar|7z|tmp|lock|pdf|dts|flac)"
+
 
 /* Loggers */
 #define logTrace LOG_TRACE

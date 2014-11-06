@@ -31,8 +31,17 @@ void FileWatchersManager::scanDir(QDir dir) {
     dir.setFilter(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     QDirIterator it(dir, QDirIterator::Subdirectories);
 
-    while (it.hasNext())
-        files << it.next();
+    while (it.hasNext()) {
+        QString nextOne = it.next();
+        QRegExp matcher(NOT_ALLOWED_FILE_TYPES);
+        matcher.setCaseSensitivity(Qt::CaseInsensitive);
+        if (not nextOne.contains(matcher)) {
+            logTrace() << "Found match:" << nextOne;
+            files << nextOne;
+        } else {
+            removePath(nextOne);
+        }
+    }
     files.removeDuplicates();
 
     addPaths(files);
