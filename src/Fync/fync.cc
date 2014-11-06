@@ -9,14 +9,6 @@
 #include "worker_thread.h"
 
 
-void loadDefaultSettings() {
-    QSettings settings;
-
-    if (settings.value("allowed_file_types").isNull())
-        settings.setValue("allowed_file_types", ALLOWED_FILE_TYPES);
-}
-
-
 /*
  *  Read file contents of text file
  */
@@ -43,7 +35,6 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setOrganizationName("VerKnowSys");
     QCoreApplication::setOrganizationDomain("verknowsys.com");
     QCoreApplication::setApplicationName("Fync");
-    loadDefaultSettings();
     QSettings settings;
     settings.setValue("lastRun", QDateTime::currentDateTime());
     QTextCodec::setCodecForLocale(QTextCodec::codecForName(DEFAULT_STRING_CODEC));
