@@ -1,0 +1,50 @@
+#!/bin/sh
+
+bin/clean
+bin/build
+
+if [ ! -x "/usr/bin/sofin" ]; then
+    printf "Using Sofin for software installation is a preffered method for installing dependencies of Fync. I don't support that case. Use on your own risk.\n"
+fi
+
+printf "Creating software bundle\n"
+# macdeployqt Fync.app -dmg
+macdeployqt Synshot.app -dmg
+printf "Doing merge into Synshot\n"
+cp Fync.app/Contents/MacOS/Fync Synshot.app/Contents/MacOS/
+
+printf "Hacking bundle to reduce bloat\n"
+# rm -rf Fync.app
+# mv Synshot.app/Contents/PlugIns/imageformats/*.dylib ./
+cp `which puttygen` Synshot.app/Contents/MacOS/puttygen
+# rm -rf Synshot.app/Contents/PlugIns
+# mkdir -p Synshot.app/Contents/PlugIns/imageformats
+# mv *.dylib Synshot.app/Contents/PlugIns/imageformats/
+# rm -rf Synshot.app/Contents/Resources/empty.lproj
+
+for i in $(find Synshot.app/Contents/MacOS -type f); do
+    strip $i
+done
+printf "Creating archive\n"
+VERSION="$(grep 'APP_VERSION' Fync/Fync.h | awk '{ gsub(/\"/, "", $3);  print $3; }')"
+zip -r -y Synshot-${VERSION}.zip Synshot.app
+mkdir -p releases
+mv *.zip releases/
+
+if [ "${USER}" = "dmilith" ]; then # XXX: hacky but i'm lazy ;p
+    if [ "${SEND}" = "yes" ]; then
+        scp releases/Synshot-${VERSION}.zip dmilith@v:/home/dmilith/Web/Public/Synshot-releases
+    fi
+    killall Synshot
+    rm -fr /Applications/Synshot.app
+    mv Synshot.app /Applications/
+    user_id="$(id -u)"
+    log_path="/var/log/com.apple.launchd.peruser.${user_id}"
+    if [ -f "${log_path}/Synshot.log" ]; then
+        mv ${log_path}/Synshot.log "${log_path}/Synshot.log.$(date +%d%m%Y-%M%S)"
+    fi
+    /Applications/Synshot.app/Contents/MacOS/Synshot > "${log_path}/Synshot.log" 2>&1 &
+fi
+
+printf "Cleaning source tree\n"
+bin/clean && printf "Done.\n"

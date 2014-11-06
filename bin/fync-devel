@@ -1,0 +1,9 @@
+#!/bin/sh
+
+bin/build
+if [ "$1" = "lldb" ]; then
+    lldb bin/fync
+else
+    bin/fync $@
+fi
+exit $?

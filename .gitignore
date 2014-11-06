@@ -1,0 +1,13 @@
+*.o
+Makefile
+moc_*.cpp
+/Synshot.app/
+/Synshot/ui_Synshot.h
+/Synshot/qrc_Synshot.cpp
+/*.zip
+*.a
+/Fync.app/
+/releases/
+/.qmake.stash
+*.dmg
+*.xcodeproj

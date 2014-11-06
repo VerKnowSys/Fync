@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ ! -x "/usr/bin/sofin" ]; then
+    printf "Using Sofin for software installation is a preffered method for installing dependencies of Fync. I don't support that case. Use on your own risk.\n"
+    # exit 1
+fi
+
+if [ "$(uname)" != "Darwin" ]; then
+    if [ ! -d "/Software/Qtws53/include" ]; then
+        sofin install qtws53
+    fi
+fi
+
+SPEC_TYPE=""
+qmake ${SPEC_TYPE} Fync.pro
+make -j8
+exit $?
