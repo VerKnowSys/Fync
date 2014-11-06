@@ -27,18 +27,12 @@ class FileWatchersManager: public QFileSystemWatcher {
 
     public:
         FileWatchersManager(const QString& sourceDir);
-        // void callSuccess();
         void scanDir(QDir dir);
-        QStringList removeFromList(QStringList& list, const QStringList& toDelete);
         void loadSettings(); /* load app settings */
-
-    // signals:
-        /* slot to trigger icon type in tray */
-        // void setWork(int state);
-
+        QStringList removeFromList(QStringList& list, const QStringList& toDelete);
 
     private:
-        QStringList files = QStringList(); //, oldFiles = QStringList();
+        QStringList files;
         QString baseCWD, fullDestinationLog;
         QDateTime lastModified;
         QSettings settings;

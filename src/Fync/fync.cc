@@ -9,12 +9,6 @@
 #include "worker_thread.h"
 
 
-void usage() {
-    logDebug() << "Usage:" << endl
-             << "Fync ~/Projects/MyProjectDir dmilith@myhost.com:/remote/destination/of/MyProjectDir [ more.host.com:/also/here/MyProjectDir.copy ]";
-}
-
-
 void loadDefaultSettings() {
     QSettings settings;
 
@@ -45,7 +39,6 @@ QString readFileContents(const QString& fileName) {
 
 
 int main(int argc, char *argv[]) {
-
     QCoreApplication app(argc, argv);
     QCoreApplication::setOrganizationName("VerKnowSys");
     QCoreApplication::setOrganizationDomain("verknowsys.com");
@@ -55,7 +48,6 @@ int main(int argc, char *argv[]) {
     settings.setValue("lastRun", QDateTime::currentDateTime());
     QTextCodec::setCodecForLocale(QTextCodec::codecForName(DEFAULT_STRING_CODEC));
     QStringList args = app.arguments();
-
     QStringList remotes;
     QList<WorkerThread*> workers;
 
@@ -65,15 +57,9 @@ int main(int argc, char *argv[]) {
     consoleAppender->setFormat("%t{dd-HH:mm:ss} [%-7l] <%c:(%F:%i)> %m\n");
     consoleAppender->setDetailsLevel(Logger::Trace);
 
-    /* handle bad arguments */
-    // if (args.size() < 3) {
-    //     usage();
-    //     exit(1);
-    // }
     logInfo() << "Fync v" << APP_VERSION << "-" << COPYRIGHT;
     QStringList inputDirs = readFileContents("input-dirs").trimmed().split("\n");
     logDebug() << "Input dirs:" << inputDirs.join(", ");
-
 
     for (int i = 0; i < inputDirs.length(); i++) {
         logDebug() << "Creating thread for:" << inputDirs.at(i);
