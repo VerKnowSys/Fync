@@ -8,12 +8,13 @@
 #include "worker_thread.h"
 
 
-WorkerThread::WorkerThread(const QString& sourceDir) {
+WorkerThread::WorkerThread(const QString& sourceDir, QFile* logger) {
     this->source = sourceDir;
+    this->pipeLogger = logger;
 }
 
 
 void WorkerThread::run() {
-    this->watcher = new FileWatchersManager(source); /* true => store files on remote as SHA1 of original name */
+    this->watcher = new FileWatchersManager(source, pipeLogger); /* true => store files on remote as SHA1 of original name */
     exec();
 }

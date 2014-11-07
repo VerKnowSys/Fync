@@ -27,6 +27,7 @@
 
 #define APP_VERSION "0.1.1"
 
+#define OUTPUT_PIPE "/var/log/output_pipe"
 #define FILE_SYNC_TIMEOUT 1000000 /* 1 second in us */
 #define COPYRIGHT "2014 verknowsys.com"
 #define DEFAULT_STRING_CODEC "UTF8"

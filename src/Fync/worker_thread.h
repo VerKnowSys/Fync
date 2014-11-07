@@ -17,13 +17,14 @@ class WorkerThread: public QThread {
     Q_OBJECT
 
     public:
-        WorkerThread(const QString& sourceDir);
+        WorkerThread(const QString& sourceDir, QFile* logger);
         void run();
 
 
     private:
         QPointer<FileWatchersManager> watcher;
         QString source;
+        QFile* pipeLogger;
 
 };
 

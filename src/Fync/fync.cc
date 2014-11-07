@@ -46,15 +46,17 @@ int main(int argc, char *argv[]) {
     ConsoleAppender *consoleAppender = new ConsoleAppender();
     Logger::registerAppender(consoleAppender);
     consoleAppender->setFormat("%t{dd-HH:mm:ss} [%-7l] <%c:(%F:%i)> %m\n");
-    consoleAppender->setDetailsLevel(Logger::Trace);
+    consoleAppender->setDetailsLevel(Logger::Debug);
 
     logInfo() << "Fync v" << APP_VERSION << "-" << COPYRIGHT;
     QStringList inputDirs = readFileContents("input-dirs").trimmed().split("\n");
     logDebug() << "Input dirs:" << inputDirs.join(", ");
 
+    QFile* loggerPipe = new QFile(OUTPUT_PIPE);
+    loggerPipe->open(QIODevice::WriteOnly);
     for (int i = 0; i < inputDirs.length(); i++) {
         logDebug() << "Creating thread for:" << inputDirs.at(i);
-        workers << new WorkerThread(inputDirs.at(i));
+        workers << new WorkerThread(inputDirs.at(i), loggerPipe);
         workers.at(i)->start();
     }
 

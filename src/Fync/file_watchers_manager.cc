@@ -8,19 +8,15 @@
 #include "file_watchers_manager.h"
 
 
-FileWatchersManager::FileWatchersManager(const QString& sourceDir) {
+FileWatchersManager::FileWatchersManager(const QString& sourceDir, QFile* logger) {
     logDebug() << "Starting recursive watch on dir:" << sourceDir;
     this->baseCWD = sourceDir;
+    this->loggerPipe = logger;
 
     /* connect hooks to invokers */
     connect(this, SIGNAL(fileChanged(QString)), this, SLOT(fileChangedSlot(QString)));
     connect(this, SIGNAL(directoryChanged(QString)), this, SLOT(dirChangedSlot(QString)));
-    scanDir(QDir(sourceDir)); /* will fill up manager 'files' field */
-}
-
-
-void FileWatchersManager::loadSettings() {
-    QSettings settings;
+    scanDir(QDir(sourceDir));
 }
 
 
@@ -37,15 +33,13 @@ void FileWatchersManager::scanDir(QDir dir) {
         matcher.setCaseSensitivity(Qt::CaseInsensitive);
         if (not nextOne.contains(matcher)) {
             logTrace() << "Found match:" << nextOne;
-            files << nextOne;
+            addPath(nextOne);
         } else {
             removePath(nextOne);
         }
     }
-    files.removeDuplicates();
 
-    addPaths(files);
-    logDebug() << "Total dirs on watch for dir:" << baseCWD << "-" << QString::number(files.size());
+    logDebug() << "Watched dir:" << baseCWD; // << "Diff:" << QString::number(files.size());
     long end = QDateTime::currentMSecsSinceEpoch();
     logDebug() << "Scan took:" << QString::number(end - start) << "ms";
 }
@@ -55,6 +49,11 @@ void FileWatchersManager::fileChangedSlot(const QString& file) {
     logInfo() << "File changed slot called for:" << file;
     /*  here all the magic wil lhappen. We need to create thread safe
         queue of events from fs, which will be passed to endpoint mechanism */
+    mutex.lock();
+    logDebug() << "Writing to log pipe:" << file;
+    loggerPipe->write(file.toUtf8() + "\n");
+    loggerPipe->flush();
+    mutex.unlock();
 }
 
 

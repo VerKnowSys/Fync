@@ -26,16 +26,13 @@ class FileWatchersManager: public QFileSystemWatcher {
     Q_OBJECT
 
     public:
-        FileWatchersManager(const QString& sourceDir);
+        FileWatchersManager(const QString& sourceDir, QFile* logger);
         void scanDir(QDir dir);
-        void loadSettings(); /* load app settings */
-        QStringList removeFromList(QStringList& list, const QStringList& toDelete);
 
     private:
-        QStringList files;
-        QString baseCWD, fullDestinationLog;
-        QDateTime lastModified;
-        QSettings settings;
+        QString baseCWD;
+        QFile* loggerPipe;
+        QMutex mutex;
 
     public slots:
         void fileChangedSlot(const QString& file);
